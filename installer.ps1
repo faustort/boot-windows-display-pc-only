@@ -18,9 +18,16 @@ if (-not (Test-Path $scriptPath)) {
     Write-Host "✅ Pasta criada em $scriptPath"
 }
 
-# Copia o arquivo .bat do diretório atual
-Copy-Item ".\ForcePCOnly.bat" $batFile -Force
-Write-Host "✅ Script copiado para $batFile"
+# Baixa o arquivo .bat diretamente do repositório GitHub
+$batUrl = "https://raw.githubusercontent.com/faustort/boot-windows-display-pc-only/main/ForcePCOnly.bat"
+try {
+    Invoke-WebRequest -Uri $batUrl -OutFile $batFile -UseBasicParsing
+    Write-Host "✅ Script baixado de $batUrl para $batFile"
+}
+catch {
+    Write-Host "❌ Falha ao baixar o arquivo ForcePCOnly.bat. Verifique sua conexão com a internet."
+    exit 1
+}
 
 # Remove a tarefa anterior, se existir
 if (Get-ScheduledTask -TaskName $taskName -ErrorAction SilentlyContinue) {
